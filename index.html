@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Adaptativo - Propuesta Corporativa</title>
+    <title>Software Factory & CRM - Propuesta Corporativa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,47 +22,94 @@
             background-color: #0a0a0a; 
             display: flex; 
             flex-direction: column;
-            gap: 40px; 
             align-items: center; 
-            padding: 40px 0; 
+            /* Espacio para la barra de navegación fija */
+            padding: 120px 0 40px 0; 
             font-family: 'Urbanist', sans-serif; 
             color: #fff; 
-            overflow-x: hidden; /* Evita scroll horizontal indeseado */
-        }
-        
-        /* LOGO PRINCIPAL - ESQUINA SUPERIOR IZQUIERDA */
-        .custom-logo { 
-            position: absolute;
-            top: 50px;
-            left: 60px;
-            width: 80px; 
-            height: auto; 
-            filter: invert(1); 
-            mix-blend-mode: screen; 
-            opacity: 0.95;
-            z-index: 10;
+            overflow-x: hidden;
         }
 
-        /* MARCA DE AGUA DE TEXTO - OTRAS DIAPOSITIVAS */
-        .watermark { 
-            position: absolute; 
-            bottom: 40px; 
-            right: 60px; 
-            opacity: 0.3; 
-            font-size: 18px;
-            letter-spacing: 4px;
-            z-index: 10;
+        /* =========================================
+           BARRA DE NAVEGACIÓN (TABS)
+           ========================================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            z-index: 1000;
         }
-        .watermark span {
-            font-weight: 800;
-            color: var(--primary-green);
+
+        .nav-brand { display: flex; align-items: center; gap: 15px; }
+        .nav-logo-img { width: 40px; height: auto; filter: invert(1); mix-blend-mode: screen; }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 5px;
+            border-radius: 12px;
         }
+
+        .tab-glider {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            height: calc(100% - 10px);
+            background: var(--primary-green);
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 0;
+        }
+
+        .nav-link {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-family: 'Urbanist', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-link:hover { color: #fff; }
+        .nav-link.active-tab { color: #000; }
+
+        /* Contenedores de cada pestaña */
+        .tab-section {
+            display: none; /* Se ocultan por defecto */
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* CONFIGURACIÓN DE LAS DIAPOSITIVAS */
         .slide-container { 
-            width: 100%; /* Cambiado para ser fluido */
-            max-width: 1280px; /* Límite en PC */
-            min-height: 720px; /* Asegura altura en PC */
+            width: 100%; 
+            max-width: 1280px; 
+            min-height: 720px; 
             background-color: #000; 
             position: relative; 
             overflow: hidden; 
@@ -92,21 +139,28 @@
         /* ESTILOS DE TARJETAS */
         .card-custom { background: rgba(255,255,255,0.03); padding: 25px 35px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
         .card-custom:hover { border-color: var(--primary-green); background: var(--primary-green-very-low); transform: translateY(-5px); }
-        .card-custom i { font-size: 36px; color: var(--primary-green); margin-bottom: 15px; }
+        .card-custom i.icon-main { font-size: 36px; color: var(--primary-green); margin-bottom: 15px; display: inline-block; }
         .card-custom h3 { font-size: 24px; margin-bottom: 10px; }
         .card-custom p { color: #aaa; font-size: 17px; line-height: 1.5; }
 
-        /* Clases específicas para el Grid de Características (Slide 2) */
+        /* Clases específicas para el Grid de Características */
         .feature-wide { grid-column: span 2; padding: 25px; }
         .feature-half-left { grid-column: 2 / 4; padding: 25px; }
         .feature-half-right { grid-column: 4 / 6; padding: 25px; }
+        .feature-full { grid-column: 1 / -1; }
 
-        /* Clases específicas para Pricing (Slide 5) */
+        /* Clases específicas para Pricing */
         .pricing-card { display: flex; flex-direction: column; padding: 30px; }
         .pricing-value { font-size: 38px; font-weight: 700; margin-bottom: 5px; }
         .pricing-iva { font-size: 14px; color: #888; margin-bottom: 20px; }
         .pricing-list { color: #aaa; font-size: 14px; line-height: 1.8; list-style: none; flex-grow: 1; }
-        .pricing-list i { font-size: 14px; margin-bottom: 0; }
+        .pricing-list i { font-size: 14px; margin-bottom: 0; color: var(--primary-green); margin-right: 8px;}
+
+        /* Clases para Botones Interactivos */
+        .btn-solid { transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .btn-solid:hover { transform: translateY(-3px); box-shadow: 0 10px 20px var(--primary-green-glow); }
+        .btn-outline { transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .btn-outline:hover { background: var(--primary-green-very-low) !important; transform: translateY(-3px); }
 
         .tag { display: inline-block; padding: 6px 12px; background: var(--primary-green-low); color: var(--primary-green); border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
 
@@ -120,26 +174,6 @@
         .line-2 { background: linear-gradient(270deg, var(--primary-green), transparent); }
 
         /* =========================================
-           FALLBACK LOGO (Si falla Google Drive)
-           ========================================= */
-        .fallback-logo {
-            position: absolute;
-            top: 50px;
-            left: 60px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #fff;
-        }
-        .fallback-icon { font-size: 45px; font-weight: 700; line-height: 1; position: relative; }
-        .fallback-icon::before {
-            content: ''; position: absolute; top: 8px; left: -8px; width: 12px; height: 12px;
-            background-color: #fff; clip-path: polygon(100% 0, 0 45%, 100% 100%);
-        }
-        .fallback-text { font-size: 10px; letter-spacing: 6px; margin-top: 4px; margin-left: 6px; }
-
-        /* =========================================
            SISTEMA DE ANIMACIONES SCROLL
            ========================================= */
         .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -149,283 +183,495 @@
         .delay-300 { transition-delay: 300ms; }
         .delay-400 { transition-delay: 400ms; }
         .delay-500 { transition-delay: 500ms; }
+        .delay-600 { transition-delay: 600ms; }
 
         /* =========================================
            ADAPTABILIDAD MÓVIL (RESPONSIVE DESIGN)
            ========================================= */
-        
-        /* Tablets (Hasta 1024px) */
         @media (max-width: 1024px) {
-            .slide-container {
-                padding: 100px 40px 40px 40px;
-                min-height: auto;
-            }
-            .grid-possibilities, .grid-features, .grid-pricing {
-                grid-template-columns: 1fr; /* Todo pasa a una sola columna */
-            }
-            .feature-wide, .feature-half-left, .feature-half-right {
-                grid-column: 1 / -1; /* Ocupan todo el ancho en móvil */
-            }
-            .visual-connector {
-                flex-direction: column;
-                height: auto;
-                gap: 20px;
-                padding: 40px 0;
-            }
+            .navbar { padding: 0 20px; overflow-x: auto; white-space: nowrap; }
+            .nav-brand { display: none; /* Oculta logo en tablet para dar espacio a pestañas */ }
+            .slide-container { padding: 100px 40px 40px 40px; min-height: auto; }
+            .grid-possibilities, .grid-features, .grid-pricing { grid-template-columns: 1fr; }
+            .feature-wide, .feature-half-left, .feature-half-right, .feature-full { grid-column: 1 / -1; }
+            .visual-connector { flex-direction: column; height: auto; gap: 20px; padding: 40px 0; }
             .connector-line { width: 2px; height: 60px; }
             .line-1 { background: linear-gradient(180deg, var(--primary-green), transparent); }
             .line-2 { background: linear-gradient(0deg, var(--primary-green), transparent); }
         }
 
-        /* Teléfonos Móviles (Hasta 768px) */
         @media (max-width: 768px) {
-            body { padding: 0; gap: 0; }
-            .slide-container {
-                padding: 100px 20px 40px 20px;
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-                min-height: 100vh; /* Ocupa al menos la pantalla completa */
-            }
-            .custom-logo, .fallback-logo { top: 30px; left: 20px; width: 60px; }
-            .fallback-icon { font-size: 35px; }
-            
-            .main-title { font-size: 55px; margin-top: 40px; }
+            body { padding-top: 80px; }
+            .navbar { padding: 10px 15px; height: auto; border-bottom: none; }
+            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 10px; }
+            .nav-tabs::-webkit-scrollbar { display: none; } /* Oculta scrollbar en móvil */
+            .nav-link { font-size: 13px; padding: 10px 15px; }
+
+            .slide-container { padding: 60px 20px 40px 20px; border-radius: 0; border-left: none; border-right: none; }
+            .main-title { font-size: 50px; margin-top: 20px; }
             .main-subtitle { font-size: 18px; margin: 20px auto; }
-            .slide-title { font-size: 40px; margin-bottom: 25px; }
+            .slide-title { font-size: 38px; margin-bottom: 25px; }
             
             .card-custom { padding: 25px 20px; }
             .card-custom h3 { font-size: 22px; }
             .card-custom p { font-size: 16px; }
-            
-            .pricing-card { padding: 25px 20px; }
             .pricing-value { font-size: 32px; }
-            
-            .visual-connector .node { width: 80px; height: 80px; font-size: 24px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- SLIDE 1: EL ADN DE LA PERSONALIZACIÓN -->
-    <div class="slide-container">
-        <!-- Logo solo en la primera diapositiva con sistema Fallback -->
-        <img src="https://drive.google.com/thumbnail?id=1HN29vt4KLZOSewVMpt4_pC2If5DwFn3M&sz=w1000" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';" alt="Logo" class="custom-logo reveal">
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR (TABS) -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="https://drive.google.com/thumbnail?id=1HN29vt4KLZOSewVMpt4_pC2If5DwFn3M&sz=w100" onerror="this.style.display='none'" alt="13STUDIO" class="nav-logo-img">
+            <span style="font-weight: 800; font-size: 20px; letter-spacing: 2px;">13STUDIO</span>
+        </div>
+        <div class="nav-tabs">
+            <div class="tab-glider" id="glider"></div>
+            <button class="nav-link active-tab" data-target="tab-crm" onclick="openTab('tab-crm', this)">CRM Adaptativo</button>
+            <button class="nav-link" data-target="tab-web" onclick="openTab('tab-web', this)">Desarrollo Web</button>
+            <button class="nav-link" data-target="tab-apps" onclick="openTab('tab-apps', this)">Apps Móviles</button>
+            <button class="nav-link" data-target="tab-design" onclick="openTab('tab-design', this)">Diseño & Branding</button>
+        </div>
+    </nav>
+
+
+    <!-- ======================================================= -->
+    <!-- PESTAÑA 1: CRM ADAPTATIVO                               -->
+    <!-- ======================================================= -->
+    <div id="tab-crm" class="tab-section" style="display: flex;">
         
-        <div id="fallback-logo" class="fallback-logo reveal" style="display: none;">
-            <div class="fallback-icon">13</div>
-            <div class="fallback-text">DESIGN</div>
+        <!-- SLIDE 1: EL ADN DE LA PERSONALIZACIÓN -->
+        <div class="slide-container">
+            <div class="watermark"><span>CRM</span> ADAPTATIVO</div>
+            <div style="text-align: center; margin: auto;">
+                <h1 class="main-title reveal delay-100">CRM <span>Adaptativo</span></h1>
+                <p class="main-subtitle reveal delay-200">No es una plataforma genérica. Es un ecosistema Omnicanal moldeado exactamente a los procesos, la infraestructura y la identidad de su empresa.</p>
+            </div>
         </div>
-        
-        <div style="text-align: center; margin: auto;">
-            <h1 class="main-title reveal delay-200">CRM <span>Adaptativo</span></h1>
-            <p class="main-subtitle reveal delay-300">No es una plataforma genérica. Es un ecosistema Omnicanal moldeado exactamente a los procesos, la infraestructura y la identidad de su empresa.</p>
-        </div>
-    </div>
 
-    <!-- SLIDE 2: PERSONALIZACIÓN DE IDENTIDAD -->
-    <div class="slide-container">
-        <h2 class="slide-title reveal">Un CRM con <span>Personalidad</span> Propia</h2>
-        <div class="content-area">
-            <div class="grid-features">
-                <div class="card-custom feature-wide reveal delay-100">
-                    <span class="tag">Smart Timing</span>
-                    <i class="fa-solid fa-clock"></i>
-                    <h3 style="font-size: 21px;">Reloj Biológico</h3>
-                    <p style="font-size: 15px;">Programamos horarios de atención, cortes de comida y guardia nocturna adaptados a su equipo.</p>
-                </div>
-                <div class="card-custom feature-wide reveal delay-200">
-                    <span class="tag">Visual Identity</span>
-                    <i class="fa-solid fa-palette"></i>
-                    <h3 style="font-size: 21px;">100% Identidad Corporativa</h3>
-                    <p style="font-size: 15px;">Adiós a las interfaces estandarizadas. Adaptamos colores, menús, tono de voz y elementos visuales para que sean una extensión exacta de su marca.</p>
-                </div>
-                <div class="card-custom feature-wide reveal delay-300">
-                    <span class="tag">Workflow</span>
-                    <i class="fa-solid fa-sitemap"></i>
-                    <h3 style="font-size: 21px;">Flujos Hechos a la Medida</h3>
-                    <p style="font-size: 15px;">Su empresa no se adapta al CRM, el CRM se adapta a usted. Construimos rutas de decisión exclusivas para su operación y procesos internos.</p>
-                </div>
-                <div class="card-custom feature-half-left reveal delay-400">
-                    <span class="tag">Environment</span>
-                    <i class="fa-solid fa-microchip"></i>
-                    <h3 style="font-size: 21px;">Hosting en Infraestructura</h3>
-                    <p style="font-size: 15px;">Reside donde usted decida: servidores locales, VPS privados o VDI, garantizando soberanía de datos.</p>
-                </div>
-                <div class="card-custom feature-half-right reveal delay-500">
-                    <span class="tag">Monitoring</span>
-                    <i class="fa-solid fa-eye"></i>
-                    <h3 style="font-size: 21px;">Espejeo de Chats</h3>
-                    <p style="font-size: 15px;">Monitoree en tiempo real. Visualice las conversaciones de forma silenciosa para garantizar la calidad.</p>
+        <!-- SLIDE 2: PERSONALIZACIÓN DE IDENTIDAD -->
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Un CRM con <span>Personalidad</span> Propia</h2>
+            <div class="content-area">
+                <div class="grid-features">
+                    <div class="card-custom feature-wide reveal delay-100">
+                        <span class="tag">Smart Timing</span>
+                        <i class="fa-solid fa-clock icon-main"></i>
+                        <h3 style="font-size: 21px;">Reloj Biológico</h3>
+                        <p style="font-size: 15px;">Programamos horarios de atención, cortes de comida y guardia nocturna adaptados a su equipo.</p>
+                    </div>
+                    <div class="card-custom feature-wide reveal delay-200">
+                        <span class="tag">Visual Identity</span>
+                        <i class="fa-solid fa-palette icon-main"></i>
+                        <h3 style="font-size: 21px;">100% Identidad Corporativa</h3>
+                        <p style="font-size: 15px;">Adiós a las interfaces estandarizadas. Adaptamos colores, menús, tono de voz y elementos visuales para que sean una extensión exacta de su marca.</p>
+                    </div>
+                    <div class="card-custom feature-wide reveal delay-300">
+                        <span class="tag">Workflow</span>
+                        <i class="fa-solid fa-sitemap icon-main"></i>
+                        <h3 style="font-size: 21px;">Flujos Hechos a la Medida</h3>
+                        <p style="font-size: 15px;">Su empresa no se adapta al CRM, el CRM se adapta a usted. Construimos rutas de decisión exclusivas para su operación y procesos internos.</p>
+                    </div>
+                    <div class="card-custom feature-half-left reveal delay-400">
+                        <span class="tag">Environment</span>
+                        <i class="fa-solid fa-microchip icon-main"></i>
+                        <h3 style="font-size: 21px;">Hosting en Infraestructura</h3>
+                        <p style="font-size: 15px;">Reside donde usted decida: servidores locales, VPS privados o VDI, garantizando soberanía de datos.</p>
+                    </div>
+                    <div class="card-custom feature-half-right reveal delay-500">
+                        <span class="tag">Monitoring</span>
+                        <i class="fa-solid fa-eye icon-main"></i>
+                        <h3 style="font-size: 21px;">Espejeo de Chats</h3>
+                        <p style="font-size: 15px;">Monitoree en tiempo real. Visualice las conversaciones de forma silenciosa para garantizar la calidad.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- SLIDE 3: INTEGRACIÓN SIN LÍMITES -->
-    <div class="slide-container">
-        <h2 class="slide-title reveal">Integración <span>Total</span> de Sistemas</h2>
-        <div class="content-area">
-            <p class="reveal delay-100" style="font-size: 22px; margin-bottom: 40px; opacity: 0.8; text-align: center;">El CRM no es una isla; es el puente que conecta sus herramientas actuales.</p>
-            
-            <div class="visual-connector reveal delay-200">
-                <div class="node"><i class="fa-solid fa-database"></i></div>
-                <div class="connector-line line-1"></div>
-                <div class="node node-main">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <i class="fa-brands fa-meta" style="font-size: 18px;"></i>
+        <!-- SLIDE 3: INTEGRACIÓN Y OMNICANALIDAD -->
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Integración <span>Total</span> de Sistemas</h2>
+            <div class="content-area">
+                <div class="grid-possibilities">
+                    <div class="card-custom reveal delay-100">
+                        <i class="fa-solid fa-share-nodes icon-main"></i>
+                        <h3>Omnicanalidad Incluida</h3>
+                        <p>Atención unificada. Su CRM operará de forma nativa y simultánea en <strong>WhatsApp, Facebook Messenger, Instagram Direct y TikTok</strong>, todo desde una misma inteligencia.</p>
+                    </div>
+                    <div class="card-custom reveal delay-200">
+                        <i class="fa-solid fa-layer-group icon-main"></i>
+                        <h3>Multi-sucursal</h3>
+                        <p>Gestione múltiples números o cuentas de redes sociales distintas bajo un solo centro de inteligencia y administración de datos corporativos.</p>
+                    </div>
                 </div>
-                <div class="connector-line line-2"></div>
-                <div class="node"><i class="fa-solid fa-laptop-code"></i></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 4: ESCALABILIDAD INFINITA -->
-    <div class="slide-container">
-        <h2 class="slide-title reveal">Un Proyecto que <span>Evoluciona</span></h2>
-        <div class="content-area">
-            <div class="grid-possibilities">
-                <div class="card-custom reveal delay-100">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    <h3>Omnicanalidad Incluida</h3>
-                    <p>Atención unificada. Su CRM operará de forma nativa y simultánea en <strong>WhatsApp, Facebook Messenger, Instagram Direct y TikTok</strong>, todo desde una misma inteligencia.</p>
-                </div>
-                <div class="card-custom reveal delay-200">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <h3>Multi-sucursal</h3>
-                    <p>Gestione múltiples números o cuentas de redes sociales distintas bajo un solo centro de inteligencia y administración de datos corporativos.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 5: INVERSIÓN EN INGENIERÍA -->
-    <div class="slide-container">
-        <h2 class="slide-title reveal">Modelos de <span>Colaboración</span></h2>
-        <div class="content-area">
-            <div class="grid-pricing">
                 
-                <!-- OPCIÓN 1: LICENCIA ÚNICA -->
-                <div class="card-custom pricing-card reveal delay-100">
-                    <h3 style="color: #fff; font-size: 22px;">Licencia Única</h3>
-                    <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Propiedad total. Usted gestiona la infraestructura y mantenimiento.</p>
-                    <div class="pricing-value">$48,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> MXN</span></div>
-                    <div class="pricing-iva">+ $7,760 IVA (16%)</div>
-                    <ul class="pricing-list">
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Desarrollo completo (2-3 semanas)</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Instalación en servidor del cliente</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Entrega de código fuente</li>
-                    </ul>
+                <div class="visual-connector reveal delay-300" style="margin-top: 40px;">
+                    <div class="node"><i class="fa-solid fa-database"></i></div>
+                    <div class="connector-line line-1"></div>
+                    <div class="node node-main">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <i class="fa-brands fa-meta" style="font-size: 18px;"></i>
+                    </div>
+                    <div class="connector-line line-2"></div>
+                    <div class="node"><i class="fa-solid fa-laptop-code"></i></div>
                 </div>
-
-                <!-- OPCIÓN 2: HÍBRIDO -->
-                <div class="card-custom pricing-card reveal delay-200" style="border-color: rgba(0, 255, 136, 0.3);">
-                    <h3 style="color: #fff; font-size: 22px;">Modelo Híbrido</h3>
-                    <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Reducción de costo inicial. Paga solo por las mejoras que solicite.</p>
-                    <div class="pricing-value">$24,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> Setup</span></div>
-                    <div class="pricing-iva">+ $3,920 IVA (16%)</div>
-                    <ul class="pricing-list">
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Instalación y configuración inicial</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Soporte On-Demand (Bajo demanda)</li>
-                        <li><i class="fa-solid fa-plus" style="color: var(--primary-green); width: 20px;"></i> <strong style="color: #fff;">$1,500 MXN</strong> por revisión/ticket (+ IVA)</li>
-                    </ul>
-                </div>
-
-                <!-- OPCIÓN 3: SAAS GESTIONADO -->
-                <div class="card-custom pricing-card reveal delay-300" style="border: 2px solid var(--primary-green); background: var(--primary-green-very-low); position: relative;">
-                    <div style="position: absolute; top: -12px; right: 20px; background: var(--primary-green); color: #000; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase;">Recomendado</div>
-                    <h3 style="color: var(--primary-green); font-size: 22px;">SaaS Gestionado</h3>
-                    <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Nosotros nos encargamos de todo. Infraestructura, monitoreo y evolución.</p>
-                    <div class="pricing-value">$7,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> / mes</span></div>
-                    <div class="pricing-iva">+ $1,200 IVA (16%)</div>
-                    <ul class="pricing-list">
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> <strong style="color: #fff;">$0 Costo de instalación inicial</strong></li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Alojamiento y monitoreo continuo 24/7</li>
-                        <li><i class="fa-solid fa-check" style="color: var(--primary-green); width: 20px;"></i> Actualizaciones de API incluidas</li>
-                    </ul>
-                </div>
-
             </div>
         </div>
-    </div>
 
-    <!-- SLIDE 6: TRANSICIÓN A DESARROLLO WEB/APPS -->
-    <div class="slide-container" style="justify-content: center; text-align: center;">
-        <h2 class="main-title reveal delay-100" style="font-size: 70px;">Más Allá del <span>CRM</span></h2>
-        <p class="main-subtitle reveal delay-200" style="max-width: 800px;">Nuestra ingeniería no se detiene en la automatización. Construimos los cimientos digitales de su empresa con desarrollo web de alto rendimiento y aplicaciones a la medida.</p>
-        <div class="visual-connector reveal delay-300" style="height: 100px; justify-content: center; margin-top: 40px;">
-            <div class="node node-main" style="border-radius: 20px; width: auto; padding: 0 30px;"><i class="fa-solid fa-code"></i> <span style="font-size: 18px; font-weight: bold; margin-left: 10px;">Software Factory</span></div>
-        </div>
-    </div>
-
-    <!-- SLIDE 7: SERVICIOS DE DESARROLLO -->
-    <div class="slide-container">
-        <h2 class="slide-title reveal">Soluciones <span>Digitales</span></h2>
-        <div class="content-area">
-            <div class="grid-features" style="grid-template-columns: repeat(4, 1fr); gap: 20px;">
+        <!-- SLIDE 4: PRICING CRM -->
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Modelos de <span>Colaboración</span></h2>
+            <div class="content-area">
                 
-                <div class="card-custom reveal delay-100" style="grid-column: span 2; padding: 30px;">
-                    <i class="fa-solid fa-laptop-code"></i>
-                    <h3 style="font-size: 24px;">Desarrollo Web Corporativo</h3>
-                    <p style="font-size: 16px; margin-bottom: 15px;">Sitios web optimizados, rápidos y seguros. Desde Landing Pages de alta conversión hasta plataformas E-commerce complejas.</p>
-                    <ul style="color: #aaa; font-size: 14px; line-height: 1.8; list-style: none;">
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Diseño UI/UX a medida</li>
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Optimización SEO técnica</li>
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> CMS gestionable (WordPress, Shopify, etc.)</li>
-                    </ul>
-                </div>
-
-                <div class="card-custom reveal delay-200" style="grid-column: span 2; padding: 30px;">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                    <h3 style="font-size: 24px;">Aplicaciones Móviles</h3>
-                    <p style="font-size: 16px; margin-bottom: 15px;">Lleve su negocio al bolsillo de sus clientes. Desarrollamos PWAs y apps nativas para Android.</p>
-                    <ul style="color: #aaa; font-size: 14px; line-height: 1.8; list-style: none;">
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Desarrollo Multiplataforma (React Native / Flutter)</li>
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Integración con APIs de terceros</li>
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Publicación en Google Play</li>
-                    </ul>
-                </div>
-
-                <div class="card-custom reveal delay-300" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
-                    <h3 style="font-size: 38px; margin: 0;">¿Tiene un proyecto en mente?</h3>
-                    <div style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; gap: 12px;">
-                        <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i>
-                        Cotizar Proyecto Personalizado
+                <!-- NUEVO BANNER DE TIEMPO DE DESARROLLO -->
+                <div class="reveal delay-100" style="background: var(--primary-green-very-low); border: 1px solid rgba(0, 255, 136, 0.2); padding: 20px 30px; border-radius: 16px; margin-bottom: 30px; display: flex; align-items: center; gap: 20px;">
+                    <i class="fa-solid fa-stopwatch" style="font-size: 36px; color: var(--primary-green);"></i>
+                    <div>
+                        <h4 style="font-size: 20px; margin-bottom: 5px; color: #fff;">Desarrollo y Despliegue: <span style="color: var(--primary-green);">3 a 6 semanas</span></h4>
+                        <p style="color: #aaa; font-size: 15px; margin: 0;">Todos nuestros modelos incluyen la arquitectura completa, programación lógica Omnicanal y el diseño 100% adaptado a su identidad corporativa.</p>
                     </div>
                 </div>
 
+                <div class="grid-pricing">
+                    <div class="card-custom pricing-card reveal delay-200">
+                        <h3 style="color: #fff; font-size: 22px;">Licencia Única</h3>
+                        <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Propiedad total. Usted gestiona la infraestructura y mantenimiento.</p>
+                        <div class="pricing-value">$48,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> MXN</span></div>
+                        <div class="pricing-iva">+ $7,760 IVA (16%)</div>
+                        <ul class="pricing-list">
+                            <li><i class="fa-solid fa-check"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
+                            <li><i class="fa-solid fa-check"></i> Instalación en servidor del cliente</li>
+                            <li><i class="fa-solid fa-check"></i> Entrega de código fuente</li>
+                        </ul>
+                    </div>
+                    <div class="card-custom pricing-card reveal delay-300" style="border-color: rgba(0, 255, 136, 0.3);">
+                        <h3 style="color: #fff; font-size: 22px;">Modelo Híbrido</h3>
+                        <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Reducción de costo inicial. Paga solo por las mejoras que solicite.</p>
+                        <div class="pricing-value">$24,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> Setup</span></div>
+                        <div class="pricing-iva">+ $3,920 IVA (16%)</div>
+                        <ul class="pricing-list">
+                            <li><i class="fa-solid fa-check"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
+                            <li><i class="fa-solid fa-check"></i> Instalación y configuración inicial</li>
+                            <li><i class="fa-solid fa-check"></i> Soporte On-Demand (Bajo demanda)</li>
+                            <li><i class="fa-solid fa-plus"></i> <strong style="color: #fff;">$1,500 MXN</strong> por revisión/ticket (+ IVA)</li>
+                        </ul>
+                    </div>
+                    <div class="card-custom pricing-card reveal delay-400" style="border: 2px solid var(--primary-green); background: var(--primary-green-very-low); position: relative;">
+                        <div style="position: absolute; top: -12px; right: 20px; background: var(--primary-green); color: #000; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase;">Recomendado</div>
+                        <h3 style="color: var(--primary-green); font-size: 22px;">SaaS Gestionado</h3>
+                        <p style="font-size: 15px; margin-bottom: 20px; opacity: 0.8; height: 45px;">Nosotros nos encargamos de todo. Infraestructura, monitoreo y evolución.</p>
+                        <div class="pricing-value">$7,500<span style="font-size: 16px; font-weight: 400; color: #aaa;"> / mes</span></div>
+                        <div class="pricing-iva">+ $1,200 IVA (16%)</div>
+                        <ul class="pricing-list">
+                            <li><i class="fa-solid fa-check"></i> <strong>Integración 4 Canales</strong> (WA, FB, IG, TikTok)</li>
+                            <li><i class="fa-solid fa-check"></i> <strong style="color: #fff;">$0 Costo de instalación inicial</strong></li>
+                            <li><i class="fa-solid fa-check"></i> Alojamiento y monitoreo continuo 24/7</li>
+                            <li><i class="fa-solid fa-check"></i> Actualizaciones de API incluidas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA GLOBAL -->
+        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
+            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
+                <h3 style="font-size: 38px; margin: 0;">¿Tiene un proyecto en mente?</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar Proyecto
+                    </a>
+                    <a href="#" target="_blank" class="btn-outline" style="background: transparent; color: var(--primary-green); border: 2px solid var(--primary-green); padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-solid fa-briefcase" style="font-size: 24px; margin: 0;"></i> Ver Portafolio
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT PARA ANIMACIONES AL HACER SCROLL -->
+
+    <!-- ======================================================= -->
+    <!-- PESTAÑA 2: DESARROLLO WEB                               -->
+    <!-- ======================================================= -->
+    <div id="tab-web" class="tab-section">
+        
+        <div class="slide-container">
+            <div class="watermark"><span>WEB</span> FACTORY</div>
+            <div style="text-align: center; margin: auto;">
+                <h1 class="main-title reveal delay-100">Desarrollo <span>Web</span></h1>
+                <p class="main-subtitle reveal delay-200">Construimos ecosistemas web robustos, rápidos y escalables. Desde presencias corporativas hasta complejos portales de comercio electrónico.</p>
+            </div>
+        </div>
+
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Nuestras <span>Soluciones Web</span></h2>
+            <div class="content-area">
+                <div class="grid-features" style="grid-template-columns: repeat(2, 1fr); gap: 30px;">
+                    <div class="card-custom feature-full reveal delay-100" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                        <i class="fa-solid fa-cart-shopping icon-main" style="font-size: 50px; margin: 0 20px;"></i>
+                        <div style="flex-grow: 1; min-width: 300px;">
+                            <h3 style="font-size: 28px;">E-commerce de Alto Rendimiento</h3>
+                            <p>Tiendas en línea preparadas para alto tráfico. Configuramos pasarelas de pago (Stripe, MercadoPago, PayPal), control de inventarios automatizados y carritos de compras optimizados para evitar abandonos. (Shopify, WooCommerce, Custom).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-custom reveal delay-200">
+                        <i class="fa-solid fa-bolt icon-main"></i>
+                        <h3>Landing Pages de Conversión</h3>
+                        <p>Diseñamos páginas de aterrizaje estratégicas para sus campañas de marketing. Carga ultrarrápida, embudos de venta claros (Funnel) y llamadas a la acción (CTAs) que convierten clics en clientes reales.</p>
+                    </div>
+                    <div class="card-custom reveal delay-300">
+                        <i class="fa-solid fa-magnifying-glass-chart icon-main"></i>
+                        <h3>Optimización SEO Técnica</h3>
+                        <p>No basta con tener una web, necesita que la encuentren. Estructuramos el código, etiquetas (Metas, H1, Schema) y velocidad del sitio para escalar posiciones orgánicas en Google.</p>
+                    </div>
+                    <div class="card-custom reveal delay-400">
+                        <i class="fa-solid fa-server icon-main"></i>
+                        <h3>Plataformas Web Complejas (ERPs/CRMs)</h3>
+                        <p>Desarrollo de Intranets, sistemas de control de personal, dashboards analíticos y herramientas en la nube diseñadas específicamente para digitalizar los procesos internos de su empresa.</p>
+                    </div>
+                    <div class="card-custom reveal delay-500">
+                        <i class="fa-solid fa-object-group icon-main"></i>
+                        <h3>Diseño UI/UX y CMS</h3>
+                        <p>Interfaces intuitivas que los usuarios aman usar, conectadas a gestores de contenido (CMS como WordPress) para que su equipo pueda actualizar la información de la página sin depender de programadores.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA GLOBAL -->
+        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
+            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
+                <h3 style="font-size: 38px; margin: 0;">¿Tiene un proyecto web en mente?</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar Proyecto Web
+                    </a>
+                    <a href="#" target="_blank" class="btn-outline" style="background: transparent; color: var(--primary-green); border: 2px solid var(--primary-green); padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-solid fa-briefcase" style="font-size: 24px; margin: 0;"></i> Ver Portafolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- PESTAÑA 3: APPS MÓVILES                                 -->
+    <!-- ======================================================= -->
+    <div id="tab-apps" class="tab-section">
+        
+        <div class="slide-container">
+            <div class="watermark"><span>MOBILE</span> APPS</div>
+            <div style="text-align: center; margin: auto;">
+                <h1 class="main-title reveal delay-100">Apps <span>Móviles</span></h1>
+                <p class="main-subtitle reveal delay-200">Lleve su negocio al bolsillo de sus clientes. Desarrollamos aplicaciones de alto rendimiento listas para ser publicadas en Google Play.</p>
+            </div>
+        </div>
+
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Potencia en <span>Smartphones</span></h2>
+            <div class="content-area">
+                <div class="grid-features" style="grid-template-columns: repeat(3, 1fr); gap: 25px;">
+                    <div class="card-custom feature-full reveal delay-100" style="text-align: center; padding: 40px;">
+                        <i class="fa-brands fa-android icon-main" style="font-size: 60px;"></i>
+                        <h3 style="font-size: 32px;">Desarrollo Android Nativo & Híbrido</h3>
+                        <p style="max-width: 800px; margin: 0 auto; font-size: 18px;">Utilizamos las tecnologías más robustas del mercado (React Native, Flutter o nativo) para asegurar que su aplicación sea fluida, no consuma excesiva batería y cumpla con todos los rigurosos estándares requeridos para su aprobación en la tienda de <strong>Google Play</strong>.</p>
+                    </div>
+                    
+                    <div class="card-custom reveal delay-200">
+                        <i class="fa-solid fa-location-dot icon-main"></i>
+                        <h3>Geolocalización GPS</h3>
+                        <p>Ideales para apps de delivery, transporte o logística. Rastreo en tiempo real, cálculo de rutas e integración nativa con Google Maps API.</p>
+                    </div>
+                    <div class="card-custom reveal delay-300">
+                        <i class="fa-solid fa-bell icon-main"></i>
+                        <h3>Notificaciones Push</h3>
+                        <p>Retenga a sus usuarios. Envíe alertas directas a la pantalla de inicio del celular sobre ofertas, recordatorios de citas o actualizaciones de sus pedidos.</p>
+                    </div>
+                    <div class="card-custom reveal delay-400">
+                        <i class="fa-solid fa-gamepad icon-main"></i>
+                        <h3>Paneles de Administración</h3>
+                        <p>Toda App necesita un "cerebro". Le entregamos un panel de control web desde donde podrá ver las estadísticas de su App, banear usuarios, modificar precios o gestionar bases de datos (Firebase / SQL).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA GLOBAL -->
+        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
+            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
+                <h3 style="font-size: 38px; margin: 0;">¿Listo para lanzar su App?</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar mi App
+                    </a>
+                    <a href="#" target="_blank" class="btn-outline" style="background: transparent; color: var(--primary-green); border: 2px solid var(--primary-green); padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-solid fa-briefcase" style="font-size: 24px; margin: 0;"></i> Ver Portafolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- PESTAÑA 4: DISEÑO Y BRANDING                            -->
+    <!-- ======================================================= -->
+    <div id="tab-design" class="tab-section">
+        
+        <div class="slide-container">
+            <div class="watermark"><span>BRAND</span> DESIGN</div>
+            <div style="text-align: center; margin: auto;">
+                <h1 class="main-title reveal delay-100">Diseño & <span>Branding</span></h1>
+                <p class="main-subtitle reveal delay-200">Damos vida a su marca. Creamos identidades visuales memorables que transmiten confianza, profesionalismo y conectan emocionalmente con su audiencia.</p>
+            </div>
+        </div>
+
+        <div class="slide-container">
+            <h2 class="slide-title reveal">Servicios <span>Creativos</span></h2>
+            <div class="content-area">
+                <div class="grid-features" style="grid-template-columns: repeat(2, 1fr); gap: 30px;">
+                    <div class="card-custom reveal delay-100">
+                        <i class="fa-solid fa-pen-nib icon-main"></i>
+                        <h3>Logotipos & Identidad Visual</h3>
+                        <p>Diseñamos logotipos desde cero o hacemos <em>rebranding</em> de marcas existentes. Entregamos tipografías, paletas de colores y versiones en todos los formatos (Vector, PNG, SVG) para uso digital e impreso.</p>
+                    </div>
+                    <div class="card-custom reveal delay-200">
+                        <i class="fa-solid fa-book-open icon-main"></i>
+                        <h3>Manuales de Identidad Corporativa</h3>
+                        <p>Las marcas grandes mantienen consistencia. Elaboramos el libro de reglas de su marca: usos correctos del logo, proporciones, áreas de respeto, <em>mockups</em> de papelería corporativa y uniformes.</p>
+                    </div>
+                    <div class="card-custom reveal delay-300">
+                        <i class="fa-solid fa-box-open icon-main"></i>
+                        <h3>Diseño de Empaques (Packaging)</h3>
+                        <p>Hacemos que sus productos destaquen en los anaqueles. Diseñamos etiquetas, cajas, envases y bolsas con un enfoque comercial que enamora al consumidor desde el primer contacto visual.</p>
+                    </div>
+                    <div class="card-custom reveal delay-400">
+                        <i class="fa-solid fa-file-lines icon-main"></i>
+                        <h3>Papelería Corporativa & Editorial</h3>
+                        <p>Diseño profesional para impresión y digital. Tarjetas de presentación, hojas membretadas, carpetas, <em>brochures</em> corporativos, diseño de catálogos de productos y maquetación de revistas o <em>e-books</em>.</p>
+                    </div>
+                    <div class="card-custom reveal delay-500">
+                        <i class="fa-solid fa-hashtag icon-main"></i>
+                        <h3>Redes Sociales & Publicidad Digital</h3>
+                        <p>Kits gráficos para Instagram, Facebook, LinkedIn o TikTok. Desde plantillas editables para <em>feed</em> y <em>stories</em>, hasta diseño de <em>banners</em> de alta conversión destinados a campañas de pago (Ads).</p>
+                    </div>
+                    <div class="card-custom reveal delay-600">
+                        <i class="fa-solid fa-rectangle-ad icon-main"></i>
+                        <h3>Publicidad de Gran Formato (OOH)</h3>
+                        <p>Diseño a gran escala con resolución y proporciones perfectas. Creamos gráficos de alto impacto para espectaculares, vallas publicitarias, <em>roll-ups</em> para eventos y rotulación vehicular.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA GLOBAL -->
+        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
+            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
+                <h3 style="font-size: 38px; margin: 0;">¿Mejoramos su imagen corporativa?</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Contactar a Diseño
+                    </a>
+                    <a href="#" target="_blank" class="btn-outline" style="background: transparent; color: var(--primary-green); border: 2px solid var(--primary-green); padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
+                        <i class="fa-solid fa-briefcase" style="font-size: 24px; margin: 0;"></i> Ver Portafolio Gráfico
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- SCRIPT DE INTERACCIÓN (TABS Y ANIMACIONES SCROLL)       -->
+    <!-- ======================================================= -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const reveals = document.querySelectorAll(".reveal");
+        // CONFIGURACIÓN DEL OBSERVADOR DE ANIMACIONES
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
 
-            const revealOptions = {
-                threshold: 0.15,
-                rootMargin: "0px 0px -50px 0px"
-            };
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target); // Detiene el bucle en los bordes
+                }
+            });
+        }, revealOptions);
 
-            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Añade la clase para iniciar la animación
-                        entry.target.classList.add("active");
-                        // Deja de observar el elemento para evitar bucles infinitos en los bordes
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, revealOptions);
-
+        // Función para inicializar animaciones en los elementos visibles
+        function initReveals() {
+            const reveals = document.querySelectorAll('.reveal');
             reveals.forEach(reveal => {
                 revealOnScroll.observe(reveal);
             });
+        }
+
+        // LÓGICA DE LAS PESTAÑAS (TABS)
+        function openTab(tabId, btnElement) {
+            // 1. Ocultar todos los contenedores de pestañas
+            document.querySelectorAll('.tab-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // 2. Quitar la clase 'active-tab' de todos los botones de navegación
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('active-tab');
+            });
+            
+            // 3. Mostrar la pestaña seleccionada
+            const targetTab = document.getElementById(tabId);
+            targetTab.style.display = 'flex';
+            
+            // 4. Marcar el botón actual como activo
+            if (!btnElement) {
+                btnElement = document.querySelector(`[data-target="${tabId}"]`);
+            }
+            btnElement.classList.add('active-tab');
+
+            // 5. Animar el deslizador (Glider)
+            const glider = document.getElementById('glider');
+            glider.style.width = `${btnElement.offsetWidth}px`;
+            glider.style.transform = `translateX(${btnElement.offsetLeft}px)`;
+
+            // 6. Reiniciar el estado de las animaciones solo para la pestaña nueva
+            const revealsInTab = targetTab.querySelectorAll('.reveal');
+            revealsInTab.forEach(el => {
+                el.classList.remove('active'); // Les quita la visibilidad
+                revealOnScroll.observe(el); // Vuelve a observarlas para que se animen al bajar
+            });
+
+            // 7. Subir suavemente la ventana arriba (debajo de la barra de navegación)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Función para actualizar el Glider al cambiar el tamaño de la ventana
+        window.addEventListener('resize', () => {
+            const activeBtn = document.querySelector('.nav-link.active-tab');
+            if(activeBtn) {
+                const glider = document.getElementById('glider');
+                glider.style.width = `${activeBtn.offsetWidth}px`;
+                glider.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+            }
+        });
+
+        // Iniciar las animaciones y el Glider al cargar la página por primera vez
+        document.addEventListener("DOMContentLoaded", () => {
+            initReveals();
+            
+            // Posicionar el Glider en la pestaña activa inicialmente
+            setTimeout(() => {
+                const initialActive = document.querySelector('.nav-link.active-tab');
+                if (initialActive) {
+                    const glider = document.getElementById('glider');
+                    glider.style.width = `${initialActive.offsetWidth}px`;
+                    glider.style.transform = `translateX(${initialActive.offsetLeft}px)`;
+                }
+            }, 50); // Pequeño retraso para asegurar que los elementos ya están renderizados
         });
     </script>
 </body>
