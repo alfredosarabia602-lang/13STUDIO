@@ -17,13 +17,33 @@
             color: white;
             overflow-x: hidden;
             scroll-behavior: smooth;
+            opacity: 0; /* Oculto inicialmente para la transición */
+        }
+
+        /* --- ANIMACIONES DE TRANSICIÓN DE PÁGINA --- */
+        @keyframes slideInPage {
+            0% { opacity: 0; transform: translateX(100vw); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOutPage {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(100vw); }
+        }
+
+        .page-enter {
+            animation: slideInPage 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .page-exit {
+            animation: slideOutPage 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
         }
 
         /* --- LIGHTBOX (Previsualización) --- */
         #lightbox {
             position: fixed;
             inset: 0;
-            z-index: 200; /* Por encima de todo */
+            z-index: 200;
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(5px);
             display: none;
@@ -39,7 +59,7 @@
         }
 
         #lightbox img {
-            max-width: 85%; /* Reducido un poco para dar espacio a las flechas */
+            max-width: 85%;
             max-height: 90vh;
             object-fit: contain;
             border-radius: 4px;
@@ -66,7 +86,6 @@
         }
         .close-lightbox:hover { opacity: 1; }
 
-        /* Flechas de navegación del Lightbox */
         .lightbox-nav {
             position: absolute;
             top: 50%;
@@ -87,15 +106,11 @@
         }
 
         .lightbox-nav:hover {
-            background: rgba(14, 165, 233, 0.8); /* Accent color */
+            background: rgba(14, 165, 233, 0.8);
             transform: translateY(-50%) scale(1.1);
         }
 
-        .lightbox-nav svg {
-            width: 24px;
-            height: 24px;
-            stroke-width: 3;
-        }
+        .lightbox-nav svg { width: 24px; height: 24px; stroke-width: 3; }
 
         #prev-btn { left: 20px; }
         #next-btn { right: 20px; }
@@ -118,7 +133,6 @@
             align-items: flex-end;
         }
 
-        /* Barra de botones con animación de succión */
         .action-bar {
             display: flex;
             flex-direction: column;
@@ -204,56 +218,22 @@
             margin-right: 12px;
         }
 
-        .action-btn svg {
-            min-width: 24px;
-            height: 24px;
-        }
+        .action-btn svg { min-width: 24px; height: 24px; }
 
-        /* AJUSTES PARA MÓVIL */
         @media (max-width: 767px) {
-            .action-bar-container {
-                top: 15px;
-                right: 15px;
-            }
-
+            .action-bar-container { top: 15px; right: 15px; }
             .action-btn {
-                width: 72px;
-                height: auto;
-                flex-direction: column;
-                border-radius: 12px;
-                padding: 10px 4px;
+                width: 72px; height: auto; flex-direction: column;
+                border-radius: 12px; padding: 10px 4px;
                 background: rgba(15, 23, 42, 0.95);
             }
-
-            .action-btn:hover {
-                width: 72px;
-                padding-left: 4px;
-            }
-
+            .action-btn:hover { width: 72px; padding-left: 4px; }
             .action-btn .btn-text {
-                opacity: 1;
-                max-width: none;
-                margin-right: 0;
-                margin-top: 6px;
-                font-size: 0.65rem;
-                display: block;
+                opacity: 1; max-width: none; margin-right: 0;
+                margin-top: 6px; font-size: 0.65rem; display: block;
             }
-
-            /* Ajuste de navegación para encajar justo en el ancho */
-            .filter-nav .flex {
-                justify-content: space-between;
-                width: 100%;
-                gap: 2px;
-                padding: 0 5px;
-            }
-            .category-btn {
-                flex: 1;
-                font-size: 8px;
-                padding: 12px 2px !important;
-                text-align: center;
-                white-space: nowrap;
-            }
-
+            .filter-nav .flex { justify-content: space-between; width: 100%; gap: 2px; padding: 0 5px; }
+            .category-btn { flex: 1; font-size: 8px; padding: 12px 2px !important; text-align: center; white-space: nowrap; }
             .mobile-short-text { display: block; }
             .desktop-long-text { display: none; }
         }
@@ -263,71 +243,45 @@
             .desktop-long-text { display: inline; }
         }
 
-        /* Toast y estética general */
         #copy-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
+            position: fixed; bottom: 30px; left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #10b981;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            z-index: 1000;
+            background: #10b981; color: white; padding: 12px 24px;
+            border-radius: 50px; font-weight: 600; z-index: 1000;
             transition: transform 0.4s ease;
         }
-
         #copy-toast.show { transform: translateX(-50%) translateY(0); }
 
         #hero {
             transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease-out;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            z-index: 50;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-color: var(--hero-bg);
         }
         .hero-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
         .gradient-overlay { background: radial-gradient(circle at center, rgba(14, 165, 233, 0.05) 0%, rgba(11, 15, 26, 0) 70%); }
         .scroll-spacer { height: 100vh; }
         
-        /* Sección Intro Animada */
         #intro {
-            opacity: 0;
-            transform: translateY(40px);
+            opacity: 0; transform: translateY(40px);
             transition: opacity 1s ease-out, transform 1s ease-out;
         }
-        #intro.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        #intro.visible { opacity: 1; transform: translateY(0); }
 
         .filter-nav {
             position: sticky; top: 0;
-            background: rgba(11, 15, 26, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 40;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(11, 15, 26, 0.85); backdrop-filter: blur(12px);
+            z-index: 40; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .category-btn { transition: all 0.3s ease; border-bottom: 2px solid transparent; padding: 1rem 0.5rem; }
         .category-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
         
         .img-container { 
-            background: #161b2c; 
-            /* Importante: display flex y centrado para placeholders y comportamiento robusto */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            position: relative; 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            cursor: pointer; 
-            /* CRÍTICO: min-height y min-width en 0 evitan que el contenedor crezca por el contenido */
-            min-height: 0;
-            min-width: 0;
+            background: #161b2c; display: flex; align-items: center; justify-content: center; 
+            border-radius: 12px; overflow: hidden; position: relative; 
+            border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; 
+            min-height: 0; min-width: 0;
         }
         .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .img-container:hover img { transform: scale(1.08); } 
@@ -340,37 +294,22 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Estilos para la etiqueta de categoría en modo Destacados */
         .category-tag {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(11, 15, 26, 0.85);
-            color: var(--accent);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-            z-index: 20;
-            opacity: 0; /* Oculto por defecto */
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+            position: absolute; top: 10px; left: 10px;
+            background-color: rgba(11, 15, 26, 0.85); color: var(--accent);
+            padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+            border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px);
+            z-index: 20; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
         }
 
-        /* Clase que activa la visibilidad de las etiquetas */
-        #gallery-grid.mode-featured .category-tag {
-            opacity: 1;
-        }
+        #gallery-grid.mode-featured .category-tag { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <!-- BOTÓN VOLVER A LANDING PAGE -->
-    <a href="index.html" class="fixed top-4 left-4 md:top-6 md:left-6 z-[100] flex items-center gap-2 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white px-3 md:px-4 py-2 rounded-full shadow-lg hover:bg-sky-500 hover:border-sky-400 hover:scale-105 transition-all duration-300 group cursor-pointer">
+    <!-- BOTÓN VOLVER A LANDING PAGE CON NUEVA FUNCIÓN DE SALIDA -->
+    <a href="#" onclick="cerrarPortafolio(event)" class="fixed top-4 left-4 md:top-6 md:left-6 z-[100] flex items-center gap-2 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white px-3 md:px-4 py-2 rounded-full shadow-lg hover:bg-sky-500 hover:border-sky-400 hover:scale-105 transition-all duration-300 group cursor-pointer">
         <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
@@ -381,16 +320,14 @@
     <div id="lightbox" onclick="closeLightbox()">
         <span class="close-lightbox">&times;</span>
         
-        <!-- Flecha Anterior -->
         <button id="prev-btn" class="lightbox-nav" onclick="event.stopPropagation(); changeImage(-1)">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
 
-        <img id="lightbox-img" src="" alt="Vista Previa" onclick="event.stopPropagation()"> <!-- stopPropagation para no cerrar al dar clic en la imagen -->
+        <img id="lightbox-img" src="" alt="Vista Previa" onclick="event.stopPropagation()">
         
-        <!-- Flecha Siguiente -->
         <button id="next-btn" class="lightbox-nav" onclick="event.stopPropagation(); changeImage(1)">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -400,7 +337,6 @@
 
     <!-- CONTENEDOR DE ACCIONES -->
     <div class="action-bar-container">
-        <!-- Botón Toggle (Ojo) -->
         <button class="toggle-visibility-btn" onclick="toggleActionBar()" title="Mostrar/Ocultar contacto">
             <svg id="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -696,7 +632,6 @@
             </div>
 
             <!-- Flyer 4 (Campaña de Aniversario) -->
-            <!-- DESTACADO: Se añade 'featured' a data-category y etiqueta visual -->
             <div class="project-card flex flex-col gap-4 relative" data-category="flyers featured" data-internal-label="flyer 4">
                 <div class="category-tag">Flyers</div>
                 <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
@@ -709,7 +644,6 @@
             </div>
 
             <!-- Flyer 5 (Campaña por Nueva Linea) -->
-            <!-- DESTACADO: Se añade 'featured' a data-category y etiqueta visual -->
             <div class="project-card flex flex-col gap-4 relative" data-category="flyers featured" data-internal-label="flyer 5">
                 <div class="category-tag">Flyers</div>
                 <div class="grid grid-cols-2 grid-rows-2 gap-2 aspect-square overflow-hidden">
@@ -737,7 +671,6 @@
             </div>
 
             <!-- Impresos 2 (Folletos) -->
-            <!-- DESTACADO: Se añade 'featured' a data-category -->
             <div class="project-card flex flex-col gap-4 relative" data-category="impresos featured" data-internal-label="impresos 2">
                 <div class="category-tag">Impresos</div>
                 <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
@@ -765,7 +698,6 @@
             </div>
 
             <!-- Impresos 4 (Poster promocional) -->
-            <!-- DESTACADO: Se añade 'featured' a data-category -->
             <div class="project-card flex flex-col gap-4 relative" data-category="impresos featured" data-internal-label="impresos 4">
                 <div class="category-tag">Impresos</div>
                 <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
@@ -796,11 +728,40 @@
     </main>
 
     <script>
+        // --- ANIMACIÓN DE ENTRADA Y SALIDA ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Añade la clase que desliza la página hacia adentro
+            document.body.classList.add('page-enter');
+            
+            // Cuando la animación termine (600ms), quitamos la clase y la hacemos visible normalmente
+            // Esto evita que la posición de los elementos fijos (como los botones y el lightbox) se rompan
+            setTimeout(() => {
+                document.body.classList.remove('page-enter');
+                document.body.style.opacity = '1';
+            }, 600);
+            
+            // Cargar por defecto la galería
+            filterProjects('destacados');
+        });
+
+        // Función para cerrar el portafolio y regresar a la landing
+        function cerrarPortafolio(event) {
+            event.preventDefault(); // Evita que navegue de inmediato
+            
+            // Aplica la animación para deslizarse hacia la derecha
+            document.body.classList.add('page-exit');
+            
+            // Espera a que termine la animación (450ms) antes de redirigir
+            setTimeout(() => {
+                // Si tu archivo principal tiene otro nombre, cámbialo aquí
+                window.location.href = 'index.html'; 
+            }, 450);
+        }
+
         window.addEventListener('scroll', () => {
             const hero = document.getElementById('hero');
             hero.classList.toggle('hero-hidden', window.scrollY > 50);
             
-            // Animación de la sección intro al hacer scroll
             const intro = document.getElementById('intro');
             const introPos = intro.getBoundingClientRect().top;
             const screenPos = window.innerHeight / 1.3;
@@ -814,39 +775,30 @@
 
         // --- Variables Globales del Lightbox ---
         let currentImageIndex = 0;
-        let galleryImages = []; // Almacenará las URLs de las imágenes visibles actualmente
+        let galleryImages = [];
 
-        // --- Funciones del Lightbox ---
         function openLightbox(src, element) {
-            // 1. Detectar el contenedor del proyecto (la tarjeta padre)
             const projectCard = element.closest('.project-card');
             
             if (projectCard) {
-                // Si existe la tarjeta padre, solo recopilamos las imágenes de ESA tarjeta
                 galleryImages = [];
                 const images = projectCard.querySelectorAll('img');
                 images.forEach(img => galleryImages.push(img.src));
             } else {
-                // Fallback por si acaso
                 galleryImages = [src];
             }
 
-            // 2. Encontrar el índice de la imagen que se clickeó dentro de este grupo reducido
             currentImageIndex = galleryImages.indexOf(src);
-
             if (currentImageIndex === -1) {
                 galleryImages = [src];
                 currentImageIndex = 0;
             }
 
-            // 3. Mostrar la imagen
             updateLightboxImage();
 
             const lightbox = document.getElementById('lightbox');
             lightbox.style.display = 'flex';
-            setTimeout(() => {
-                lightbox.classList.add('active');
-            }, 10);
+            setTimeout(() => lightbox.classList.add('active'), 10);
         }
 
         function closeLightbox() {
@@ -854,35 +806,29 @@
             lightbox.classList.remove('active');
             setTimeout(() => {
                 lightbox.style.display = 'none';
-                document.getElementById('lightbox-img').src = ''; // Limpiar src
-            }, 400); // Esperar a la transición
+                document.getElementById('lightbox-img').src = '';
+            }, 400);
         }
 
         function changeImage(step) {
             currentImageIndex += step;
-            
-            // Loop infinito: si pasa del final vuelve al inicio, y viceversa
             if (currentImageIndex >= galleryImages.length) {
                 currentImageIndex = 0;
             } else if (currentImageIndex < 0) {
                 currentImageIndex = galleryImages.length - 1;
             }
-
             updateLightboxImage();
         }
 
         function updateLightboxImage() {
             const img = document.getElementById('lightbox-img');
-            // Efecto sutil de opacidad al cambiar
             img.style.opacity = '0.5';
-            
             setTimeout(() => {
                 img.src = galleryImages[currentImageIndex];
                 img.onload = () => { img.style.opacity = '1'; };
             }, 150);
         }
 
-        // --- Eventos de Teclado (Flechas) ---
         document.addEventListener('keydown', (e) => {
             const lightbox = document.getElementById('lightbox');
             if (!lightbox.classList.contains('active')) return;
@@ -919,7 +865,6 @@
         function filterProjects(category) {
             const grid = document.getElementById('gallery-grid');
             
-            // Activar modo destacados para mostrar etiquetas
             if (category === 'destacados') {
                 grid.classList.add('mode-featured');
             } else {
@@ -938,15 +883,12 @@
                 const cats = p.getAttribute('data-category');
                 p.style.display = (category === 'destacados' ? cats.includes('featured') : cats.includes(category)) ? 'flex' : 'none';
             });
-            // Recargar imágenes visibles si es necesario
             document.querySelectorAll('.project-card:not([style*="display: none"]) .img-container').forEach(loadDriveImage);
         }
 
         function loadDriveImage(container) {
             const id = container.getAttribute('data-drive-id');
-            // Si tiene ID "EJEMPLO" o ya tiene imagen, ignorar
             if (!id || container.querySelector('img')) {
-                // FALLBACK: Si es un ejemplo roto, poner un placeholder SVG simple
                 if (id && id.includes('EJEMPLO') && !container.querySelector('svg')) {
                      container.innerHTML = `<svg class="w-10 h-10 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`;
                 }
@@ -961,7 +903,6 @@
             let i = 0;
             function tryLoad() {
                 if (i >= urls.length) {
-                    // Si falla todo, mostrar icono
                     container.innerHTML = `<svg class="w-10 h-10 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
                     return;
                 }
@@ -971,17 +912,12 @@
                 img.onload = () => { 
                     container.innerHTML = ''; 
                     container.appendChild(img);
-                    // Añadir evento de clic para el lightbox a la imagen cargada
-                    // PASAMOS 'container' A openLightbox PARA SABER EL CONTEXTO
                     container.onclick = () => openLightbox(img.src, container);
                 };
                 img.onerror = () => { i++; tryLoad(); };
             }
             tryLoad();
         }
-
-        // Se inicializa en 'destacados' para ver el nuevo contenido
-        document.addEventListener('DOMContentLoaded', () => filterProjects('destacados'));
     </script>
 </body>
 </html>
