@@ -381,12 +381,12 @@
 
                 <div class="card-custom reveal delay-200" style="grid-column: span 2; padding: 30px;">
                     <i class="fa-solid fa-mobile-screen-button"></i>
-                    <h3 style="font-size: 24px;">Aplicaciones Móviles & Web Apps</h3>
-                    <p style="font-size: 16px; margin-bottom: 15px;">Lleve su negocio al bolsillo de sus clientes. Desarrollamos PWAs y apps nativas para iOS y Android.</p>
+                    <h3 style="font-size: 24px;">Aplicaciones Móviles</h3>
+                    <p style="font-size: 16px; margin-bottom: 15px;">Lleve su negocio al bolsillo de sus clientes. Desarrollamos PWAs y apps nativas para Android.</p>
                     <ul style="color: #aaa; font-size: 14px; line-height: 1.8; list-style: none;">
                         <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Desarrollo Multiplataforma (React Native / Flutter)</li>
                         <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Integración con APIs de terceros</li>
-                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Publicación en App Store y Google Play</li>
+                        <li><i class="fa-solid fa-angle-right" style="color: var(--primary-green); font-size: 12px; margin-right: 8px;"></i> Publicación en Google Play</li>
                     </ul>
                 </div>
 
@@ -415,9 +415,10 @@
             const revealOnScroll = new IntersectionObserver(function(entries, observer) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // Añade la clase para iniciar la animación
                         entry.target.classList.add("active");
-                    } else {
-                        entry.target.classList.remove("active");
+                        // Deja de observar el elemento para evitar bucles infinitos en los bordes
+                        observer.unobserve(entry.target);
                     }
                 });
             }, revealOptions);
