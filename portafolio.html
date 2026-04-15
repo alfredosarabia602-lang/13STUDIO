@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfredo Sarabia - Portafolio Profesional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-bg: #0b0f1a;
+            --accent: #0ea5e9;
+            --hero-bg: #0f172a;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- LIGHTBOX (Previsualización) --- */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200; /* Por encima de todo */
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #lightbox img {
+            max-width: 85%; /* Reducido un poco para dar espacio a las flechas */
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+        }
+
+        #lightbox.active img {
+            transform: scale(1);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            z-index: 220;
+        }
+        .close-lightbox:hover { opacity: 1; }
+
+        /* Flechas de navegación del Lightbox */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 210;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(14, 165, 233, 0.8); /* Accent color */
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-nav svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 3;
+        }
+
+        #prev-btn { left: 20px; }
+        #next-btn { right: 20px; }
+
+        @media (max-width: 768px) {
+            #prev-btn { left: 10px; width: 40px; height: 40px; }
+            #next-btn { right: 10px; width: 40px; height: 40px; }
+            #lightbox img { max-width: 90%; }
+        }
+
+        /* Contenedor principal de acciones */
+        .action-bar-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        /* Barra de botones con animación de succión */
+        .action-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transform-origin: 90% top; 
+            pointer-events: auto;
+        }
+
+        .action-bar.is-collapsed {
+            opacity: 0;
+            transform: scale(0) translateY(-60px);
+            pointer-events: none;
+            filter: blur(8px);
+        }
+
+        .toggle-visibility-btn {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            z-index: 110;
+        }
+
+        .toggle-visibility-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: row-reverse;
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 44px;
+            height: 44px;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .action-btn:hover {
+            width: auto;
+            max-width: 400px;
+            padding-left: 20px;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .action-btn .btn-text {
+            opacity: 0;
+            max-width: 0;
+            transition: opacity 0.3s ease, max-width 0.4s ease, margin 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 600;
+            overflow: hidden;
+            margin-right: 0;
+        }
+
+        .action-btn:hover .btn-text {
+            opacity: 1;
+            max-width: 300px;
+            margin-right: 12px;
+        }
+
+        .action-btn svg {
+            min-width: 24px;
+            height: 24px;
+        }
+
+        /* AJUSTES PARA MÓVIL */
+        @media (max-width: 767px) {
+            .action-bar-container {
+                top: 15px;
+                right: 15px;
+            }
+
+            .action-btn {
+                width: 72px;
+                height: auto;
+                flex-direction: column;
+                border-radius: 12px;
+                padding: 10px 4px;
+                background: rgba(15, 23, 42, 0.95);
+            }
+
+            .action-btn:hover {
+                width: 72px;
+                padding-left: 4px;
+            }
+
+            .action-btn .btn-text {
+                opacity: 1;
+                max-width: none;
+                margin-right: 0;
+                margin-top: 6px;
+                font-size: 0.65rem;
+                display: block;
+            }
+
+            /* Ajuste de navegación para encajar justo en el ancho */
+            .filter-nav .flex {
+                justify-content: space-between;
+                width: 100%;
+                gap: 2px;
+                padding: 0 5px;
+            }
+            .category-btn {
+                flex: 1;
+                font-size: 8px;
+                padding: 12px 2px !important;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .mobile-short-text { display: block; }
+            .desktop-long-text { display: none; }
+        }
+
+        @media (min-width: 768px) {
+            .mobile-short-text { display: none; }
+            .desktop-long-text { display: inline; }
+        }
+
+        /* Toast y estética general */
+        #copy-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.4s ease;
+        }
+
+        #copy-toast.show { transform: translateX(-50%) translateY(0); }
+
+        #hero {
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease-out;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 50;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: var(--hero-bg);
+        }
+        .hero-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        .gradient-overlay { background: radial-gradient(circle at center, rgba(14, 165, 233, 0.05) 0%, rgba(11, 15, 26, 0) 70%); }
+        .scroll-spacer { height: 100vh; }
+        
+        /* Sección Intro Animada */
+        #intro {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        #intro.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .filter-nav {
+            position: sticky; top: 0;
+            background: rgba(11, 15, 26, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 40;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .category-btn { transition: all 0.3s ease; border-bottom: 2px solid transparent; padding: 1rem 0.5rem; }
+        .category-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        
+        .img-container { 
+            background: #161b2c; 
+            /* Importante: display flex y centrado para placeholders y comportamiento robusto */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            position: relative; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            cursor: pointer; 
+            /* CRÍTICO: min-height y min-width en 0 evitan que el contenedor crezca por el contenido */
+            min-height: 0;
+            min-width: 0;
+        }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .img-container:hover img { transform: scale(1.08); } 
+        
+        .loading-spinner { border: 3px solid rgba(255, 255, 255, 0.1); border-left-color: var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Estilos para la etiqueta de categoría en modo Destacados */
+        .category-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(11, 15, 26, 0.85);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            z-index: 20;
+            opacity: 0; /* Oculto por defecto */
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* Clase que activa la visibilidad de las etiquetas */
+        #gallery-grid.mode-featured .category-tag {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN VOLVER A LANDING PAGE -->
+    <a href="index.html" class="fixed top-4 left-4 md:top-6 md:left-6 z-[100] flex items-center gap-2 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white px-3 md:px-4 py-2 rounded-full shadow-lg hover:bg-sky-500 hover:border-sky-400 hover:scale-105 transition-all duration-300 group cursor-pointer">
+        <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="text-sm font-medium hidden md:block">Volver al Inicio</span>
+    </a>
+
+    <!-- LIGHTBOX (VISOR DE IMAGEN) -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">&times;</span>
+        
+        <!-- Flecha Anterior -->
+        <button id="prev-btn" class="lightbox-nav" onclick="event.stopPropagation(); changeImage(-1)">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+
+        <img id="lightbox-img" src="" alt="Vista Previa" onclick="event.stopPropagation()"> <!-- stopPropagation para no cerrar al dar clic en la imagen -->
+        
+        <!-- Flecha Siguiente -->
+        <button id="next-btn" class="lightbox-nav" onclick="event.stopPropagation(); changeImage(1)">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- CONTENEDOR DE ACCIONES -->
+    <div class="action-bar-container">
+        <!-- Botón Toggle (Ojo) -->
+        <button class="toggle-visibility-btn" onclick="toggleActionBar()" title="Mostrar/Ocultar contacto">
+            <svg id="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        </button>
+
+        <div id="action-bar" class="action-bar">
+            <!-- Correo -->
+            <div class="action-btn" onclick="copyEmail('alfredosarabia602@gmail.com')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span class="btn-text">
+                    <span class="desktop-long-text">Copiar correo</span>
+                    <span class="mobile-short-text">Email</span>
+                </span>
+            </div>
+
+            <!-- WhatsApp -->
+            <a href="https://wa.link/wngrhg" target="_blank" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                <span class="btn-text">
+                    <span class="desktop-long-text">Contáctame</span>
+                    <span class="mobile-short-text">Chat</span>
+                </span>
+            </a>
+
+            <!-- CV -->
+            <a href="https://docs.google.com/uc?export=download&id=147vy8KA7boCJc5yTD_ULP7DxahDxkwJf" download="CV_Alfredo_Sarabia.pdf" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <polyline points="9 15 12 18 15 15"></polyline>
+                </svg>
+                <span class="btn-text">
+                    <span class="desktop-long-text">Descargar CV</span>
+                    <span class="mobile-short-text">CV</span>
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <div id="copy-toast">¡Correo copiado!</div>
+
+    <!-- PORTADA -->
+    <section id="hero">
+        <div class="absolute inset-0 gradient-overlay"></div>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-5xl md:text-8xl font-extrabold mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-600">
+                ALFREDO SARABIA
+            </h1>
+            <p class="text-base md:text-xl text-slate-300 font-light uppercase tracking-[0.25em]">
+                Diseñador Gráfico & Community Manager
+            </p>
+            <div class="mt-20 flex flex-col items-center gap-2 text-slate-500">
+                <span class="text-xs tracking-widest uppercase">Explorar</span>
+                <div class="w-px h-12 bg-gradient-to-b from-sky-500 to-transparent"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTRODUCCIÓN -->
+    <div class="scroll-spacer"></div>
+    
+    <section id="intro" class="relative z-10 py-24 md:py-32 px-6 max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-5xl font-bold mb-8 text-white">Hola, soy Alfredo Sarabia.</h2>
+        <p class="text-lg md:text-2xl text-sky-400 font-light mb-8">Profesional en Expresión Gráfica Digital & Creativo Visual.</p>
+        
+        <div class="space-y-6 text-slate-300 text-base md:text-lg leading-relaxed">
+            <p>
+                Me especializo en traducir ideas en soluciones visuales completas. Fusiono la precisión técnica del diseño gráfico con la edición fotográfica profesional, la creación de contenido multimedia y el desarrollo web.
+            </p>
+            <p>
+                Mi enfoque es estratégico: no solo diseño imágenes, construyo activos digitales que comunican, conectan y funcionan en cualquier plataforma.
+            </p>
+            <p class="pt-4 text-white font-medium">
+                A continuación, te invito a explorar una selección de mis proyectos y trayectoria profesional.
+            </p>
+        </div>
+    </section>
+
+    <nav class="filter-nav">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex overflow-x-auto no-scrollbar py-2 md:py-6 gap-8 justify-start md:justify-center text-[10px] md:text-sm font-bold uppercase tracking-widest">
+                <button class="category-btn active" onclick="filterProjects('destacados')">Destacados</button>
+                <button class="category-btn" onclick="filterProjects('branding')">Branding</button>
+                <button class="category-btn" onclick="filterProjects('flyers')">Flyers</button>
+                <button class="category-btn" onclick="filterProjects('impresos')">Impresos</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative z-10 p-8 md:p-16 max-w-7xl mx-auto">
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            
+            <!-- Branding 1 (Auto) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 1">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="116O__6PPC8hFDG-s6kmo6DDeHfEEsTIC"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1Ews1Gb2tnT1wxarY3ylGpjL6mYNr8lao"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1mWKTFhYU1G6L1LJvK4sHYGP-iaR-QX0q"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1xi0C-snrKBR6PF6kTn-XQQrDSSAfw5mT"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Auto</h3>
+                    <p class="text-slate-500 text-sm">AutoBalance Refacciones especializadas</p>
+                </div>
+            </div>
+
+            <!-- Branding 2 (Caja de moto) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 2">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1KyS4hMiCIkuwyA3JsUl55yn0ZN2IKvmp"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1SKUv3SJX7q1SeF6sXytokj4mxpXGJGdY"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Caja de moto</h3>
+                    <p class="text-slate-500 text-sm">AutoBalance Refacciones especializadas</p>
+                </div>
+            </div>
+
+            <!-- Branding 3 (Caja en tienda) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 3">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1bqIMJFQvRSwJMRImwYYfLnKF6oR-RvSU"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1yTcV-bpwFwTNdBw0eSbakSJ7wH8dxnN8"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Caja en tienda</h3>
+                    <p class="text-slate-500 text-sm">AutoBalance Refacciones especializadas</p>
+                </div>
+            </div>
+
+            <!-- Branding 4 (Fachada de tienda) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 4">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="138AbV3tGs4CUUSae9N8koaDEUia0ZSIo"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Fachada de tienda</h3>
+                    <p class="text-slate-500 text-sm">AutoBalance Refacciones especializadas</p>
+                </div>
+            </div>
+
+            <!-- Branding 5 (Fachada de SYD Store) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 5">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1aVaWDWqSK7jjHlW3k1Jg4h8F2aPiF_-W"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Fachada de SYD Store</h3>
+                    <p class="text-slate-500 text-sm">Tienda especializada</p>
+                </div>
+            </div>
+
+            <!-- Branding 6 (Pintura de fachada) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 6">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="16YLwhCTYKhI8D4H3HeCY4q7Kw33Cl8OQ"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Pintura de fachada</h3>
+                    <p class="text-slate-500 text-sm">Taller Socio</p>
+                </div>
+            </div>
+
+            <!-- Branding 7 (Pintura de fachada 2) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 7">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1p4DxgOV6Vz41AocjotLUUoslldQOQ5sP"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Pintura de fachada</h3>
+                    <p class="text-slate-500 text-sm">Taller Socio</p>
+                </div>
+            </div>
+
+            <!-- Branding 8 (Refaccionarias AGP) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 8">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1n1qJaz11yK1bIQ8SOtX_8Cni7_aNfehB"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Fachada de tienda</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Branding 9 (Totem Publicitario) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 9">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1QUDPNqniq_1ox8nl2akuQV9ZzeiroWmD"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Totem Publicitario</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Branding 10 (Playera de Uniforme) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding" data-internal-label="branding 10">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1vfHUGhNVEwBBmOP3FYIpJ4DhtEF2OTWi"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Playera de Uniforme</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Branding 11 (Troviceles de mostrador) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="branding featured" data-internal-label="branding 11">
+                <div class="category-tag">Branding</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="105bdlSMjDRoz1hV1JfIqCm6gZ0V0btM3"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1HK3VifLRKzY65aj8H_AUd8_9aeCE6zUz"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1I-7PPF9c85a75NSe6v49zs-hRgHJyA10"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1zOUwHoqAOmqAZdgXx2WYVzgSN7CRw3xO"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Troviceles de mostrador</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Flyer 1 (Promociones 2025) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="flyers" data-internal-label="flyer 1">
+                <div class="category-tag">Flyers</div>
+                <div class="grid grid-cols-4 grid-rows-4 gap-1 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1tA2hXgbFXPsBkaGAp6mEqotHvJ4JyMjp"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1NCViG4FUs0stuW9KVvbEG5ir-FP7w7ZU"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1iavW8BWcTPfr_6TpZEZDPi9hUf5LzDRN"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1Z-_LyeUfMmwjhbHGpU5TXwhpEGiKaK1W"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1X4zzsI9HIsf3Fb_-Rrm-LzooAcIvQd6L"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1DlV5A9XwGehKL7hli6gP7_DLN51QFMwi"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1oIbNiNRWG-LkaUMFLZnaaatpkTR4To8n"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="10e_ObXhXEQkPvIBiR-bwojucov8SYwWn"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1zsR8qSmYVAyU_5EQihKIivM3Yxl9YUF4"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1xfFGEoB09sKpY1vMtPLAL7-Qh8bPZ7l5"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1sQ1KK30Ds5UO_P5LWEzDPwXGDBLnVnuV"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1mGjplqriQ_TlS6pgsLNRO9Tlm9LwlRAn"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1xHW6LJDhAWPGQykKQdwq2EjUo1WaOh18"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1XPLnoOjPk6r0Rafk4QvQrDUMc90-YheL"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1gyuIsAXPj8mJCaEA-F4O6v5LBVbiOOBT"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="18nY2j6B3e-DRkjikqbnGpGtyMAPkIfXc"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Promociones 2025</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Flyer 2 (Productos especificos) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="flyers" data-internal-label="flyer 2">
+                <div class="category-tag">Flyers</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1H0PiBzPw6ewW_KB4S2yixUIIHuw_4uW5"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1biYxddCqu5LvLc4gTnIIwMVi_Vr9apWR"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1eigBzkRz6ARlWXMbVjUiKerT6m4i6uFo"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1hg8pcB2js7gcODy5tsut-WJPDQC73Suz"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Productos especificos</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Flyer 3 (Servicios) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="flyers" data-internal-label="flyer 3">
+                <div class="category-tag">Flyers</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1-5Gj4TydgGkoebhhUpBqCIsFXof1zXEe"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Servicios</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Flyer 4 (Campaña de Aniversario) -->
+            <!-- DESTACADO: Se añade 'featured' a data-category y etiqueta visual -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="flyers featured" data-internal-label="flyer 4">
+                <div class="category-tag">Flyers</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1-Eie4nyrfDjb8N0TOkH8dKem_nG-yYmj"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Campaña de Aniversario</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Flyer 5 (Campaña por Nueva Linea) -->
+            <!-- DESTACADO: Se añade 'featured' a data-category y etiqueta visual -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="flyers featured" data-internal-label="flyer 5">
+                <div class="category-tag">Flyers</div>
+                <div class="grid grid-cols-2 grid-rows-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container row-span-2 h-full w-full min-h-0 min-w-0" data-drive-id="1CuBS2kIuPr0YGtod8TkcxtQsISYkZ1N6"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1KvGJLTw92m5Ph5cOy-B8vhViUnuMmkdt"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1a9KvLcyKyMVQOD5hvLufr0cU0XgrambI"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Campaña por Nueva Linea</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Impresos 1 (Tarjetas de presentación) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="impresos" data-internal-label="impresos 1">
+                <div class="category-tag">Impresos</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1d5vBTfbXVvAIoVTtIeDiJ6QWt0TZk3wI"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1CuNpkB2DoLQQwhqyU4U5dy-FgEio0pr7"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Tarjetas de presentación</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Impresos 2 (Folletos) -->
+            <!-- DESTACADO: Se añade 'featured' a data-category -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="impresos featured" data-internal-label="impresos 2">
+                <div class="category-tag">Impresos</div>
+                <div class="grid grid-cols-2 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1D8B101rrGg7Rj7opTvoUQ3JIJ9wGepSN"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1evnp9DGNulCDdY2kHW3V8zQkPDDLb_Uh"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1D2GngQPTPIsF-Gm7CPO8D1-rMtbqfAFZ"><div class="loading-spinner"></div></div>
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1QG29_MEFABiqLJJpjPiP_QqOgmL8zbdh"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Folletos</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Impresos 3 (Lona de gran tamaño) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="impresos" data-internal-label="impresos 3">
+                <div class="category-tag">Impresos</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1Zc1fcZFk4yXDltLBbwtWgst0zC5jqrlW"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Lona de gran tamaño</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Impresos 4 (Poster promocional) -->
+            <!-- DESTACADO: Se añade 'featured' a data-category -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="impresos featured" data-internal-label="impresos 4">
+                <div class="category-tag">Impresos</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1rG9i-27yuc0mBVwG4MYr95V0hH_6ZqMC"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Poster promocional</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+            <!-- Impresos 6 (Contraportada de revista) -->
+            <div class="project-card flex flex-col gap-4 relative" data-category="impresos" data-internal-label="impresos 6">
+                <div class="category-tag">Impresos</div>
+                <div class="grid grid-cols-1 gap-2 aspect-square overflow-hidden">
+                    <div class="img-container h-full w-full min-h-0 min-w-0" data-drive-id="1GVf6qAKvxp_UQMSwNX3CQpAzVJZvX_nh"><div class="loading-spinner"></div></div>
+                </div>
+                <div class="px-2">
+                    <h3 class="text-lg font-medium text-white">Contraportada de revista</h3>
+                    <p class="text-slate-500 text-sm">Refaccionarias AGP</p>
+                </div>
+            </div>
+
+        </div>
+        <footer class="mt-32 py-10 border-t border-white/5 text-center text-slate-600 text-sm">
+            &copy; 2024 - Alfredo Sarabia
+        </footer>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const hero = document.getElementById('hero');
+            hero.classList.toggle('hero-hidden', window.scrollY > 50);
+            
+            // Animación de la sección intro al hacer scroll
+            const intro = document.getElementById('intro');
+            const introPos = intro.getBoundingClientRect().top;
+            const screenPos = window.innerHeight / 1.3;
+
+            if (introPos < screenPos && introPos > -intro.offsetHeight) {
+                intro.classList.add('visible');
+            } else {
+                intro.classList.remove('visible');
+            }
+        });
+
+        // --- Variables Globales del Lightbox ---
+        let currentImageIndex = 0;
+        let galleryImages = []; // Almacenará las URLs de las imágenes visibles actualmente
+
+        // --- Funciones del Lightbox ---
+        function openLightbox(src, element) {
+            // 1. Detectar el contenedor del proyecto (la tarjeta padre)
+            const projectCard = element.closest('.project-card');
+            
+            if (projectCard) {
+                // Si existe la tarjeta padre, solo recopilamos las imágenes de ESA tarjeta
+                galleryImages = [];
+                const images = projectCard.querySelectorAll('img');
+                images.forEach(img => galleryImages.push(img.src));
+            } else {
+                // Fallback por si acaso
+                galleryImages = [src];
+            }
+
+            // 2. Encontrar el índice de la imagen que se clickeó dentro de este grupo reducido
+            currentImageIndex = galleryImages.indexOf(src);
+
+            if (currentImageIndex === -1) {
+                galleryImages = [src];
+                currentImageIndex = 0;
+            }
+
+            // 3. Mostrar la imagen
+            updateLightboxImage();
+
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'flex';
+            setTimeout(() => {
+                lightbox.classList.add('active');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                lightbox.style.display = 'none';
+                document.getElementById('lightbox-img').src = ''; // Limpiar src
+            }, 400); // Esperar a la transición
+        }
+
+        function changeImage(step) {
+            currentImageIndex += step;
+            
+            // Loop infinito: si pasa del final vuelve al inicio, y viceversa
+            if (currentImageIndex >= galleryImages.length) {
+                currentImageIndex = 0;
+            } else if (currentImageIndex < 0) {
+                currentImageIndex = galleryImages.length - 1;
+            }
+
+            updateLightboxImage();
+        }
+
+        function updateLightboxImage() {
+            const img = document.getElementById('lightbox-img');
+            // Efecto sutil de opacidad al cambiar
+            img.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                img.src = galleryImages[currentImageIndex];
+                img.onload = () => { img.style.opacity = '1'; };
+            }, 150);
+        }
+
+        // --- Eventos de Teclado (Flechas) ---
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('active')) return;
+
+            if (e.key === 'ArrowLeft') changeImage(-1);
+            if (e.key === 'ArrowRight') changeImage(1);
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        function toggleActionBar() {
+            const bar = document.getElementById('action-bar');
+            const icon = document.getElementById('toggle-icon');
+            const isCollapsed = bar.classList.toggle('is-collapsed');
+            
+            if (isCollapsed) {
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        }
+
+        function copyEmail(email) {
+            const el = document.createElement("textarea");
+            el.value = email;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const toast = document.getElementById('copy-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function filterProjects(category) {
+            const grid = document.getElementById('gallery-grid');
+            
+            // Activar modo destacados para mostrar etiquetas
+            if (category === 'destacados') {
+                grid.classList.add('mode-featured');
+            } else {
+                grid.classList.remove('mode-featured');
+            }
+
+            const projects = document.querySelectorAll('.project-card');
+            const btns = document.querySelectorAll('.category-btn');
+            
+            btns.forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.toLowerCase().includes(category.toLowerCase())) b.classList.add('active');
+            });
+            
+            projects.forEach(p => {
+                const cats = p.getAttribute('data-category');
+                p.style.display = (category === 'destacados' ? cats.includes('featured') : cats.includes(category)) ? 'flex' : 'none';
+            });
+            // Recargar imágenes visibles si es necesario
+            document.querySelectorAll('.project-card:not([style*="display: none"]) .img-container').forEach(loadDriveImage);
+        }
+
+        function loadDriveImage(container) {
+            const id = container.getAttribute('data-drive-id');
+            // Si tiene ID "EJEMPLO" o ya tiene imagen, ignorar
+            if (!id || container.querySelector('img')) {
+                // FALLBACK: Si es un ejemplo roto, poner un placeholder SVG simple
+                if (id && id.includes('EJEMPLO') && !container.querySelector('svg')) {
+                     container.innerHTML = `<svg class="w-10 h-10 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`;
+                }
+                return;
+            }
+            
+            const urls = [
+                `https://lh3.googleusercontent.com/d/${id}`,
+                `https://drive.google.com/uc?export=view&id=${id}`,
+                `https://drive.google.com/thumbnail?id=${id}&sz=w1200`
+            ];
+            let i = 0;
+            function tryLoad() {
+                if (i >= urls.length) {
+                    // Si falla todo, mostrar icono
+                    container.innerHTML = `<svg class="w-10 h-10 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+                    return;
+                }
+                const img = new Image();
+                img.src = urls[i];
+                img.className = "fade-in w-full h-full object-cover";
+                img.onload = () => { 
+                    container.innerHTML = ''; 
+                    container.appendChild(img);
+                    // Añadir evento de clic para el lightbox a la imagen cargada
+                    // PASAMOS 'container' A openLightbox PARA SABER EL CONTEXTO
+                    container.onclick = () => openLightbox(img.src, container);
+                };
+                img.onerror = () => { i++; tryLoad(); };
+            }
+            tryLoad();
+        }
+
+        // Se inicializa en 'destacados' para ver el nuevo contenido
+        document.addEventListener('DOMContentLoaded', () => filterProjects('destacados'));
+    </script>
+</body>
+</html>
