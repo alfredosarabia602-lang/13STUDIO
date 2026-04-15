@@ -156,6 +156,12 @@
         .pricing-list { color: #aaa; font-size: 14px; line-height: 1.8; list-style: none; flex-grow: 1; }
         .pricing-list i { font-size: 14px; margin-bottom: 0; color: var(--primary-green); margin-right: 8px;}
 
+        /* Clases específicas para el CTA Global */
+        .slide-cta { min-height: auto; padding: 40px 80px 80px 80px; }
+        .cta-container { display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px; }
+        .cta-title { font-size: 38px; margin: 0; }
+        .cta-buttons-wrapper { display: flex; gap: 15px; flex-wrap: wrap; }
+
         /* Clases para Botones Interactivos */
         .btn-solid { transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .btn-solid:hover { transform: translateY(-3px); box-shadow: 0 10px 20px var(--primary-green-glow); }
@@ -189,8 +195,14 @@
            ADAPTABILIDAD MÓVIL (RESPONSIVE DESIGN)
            ========================================= */
         @media (max-width: 1024px) {
-            .navbar { padding: 0 20px; overflow-x: auto; white-space: nowrap; }
-            .nav-brand { display: none; /* Oculta logo en tablet para dar espacio a pestañas */ }
+            .navbar { 
+                padding: 15px 20px 0 20px; 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+                height: auto; 
+            }
+            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 10px; }
             .slide-container { padding: 100px 40px 40px 40px; min-height: auto; }
             .grid-possibilities, .grid-features, .grid-pricing { grid-template-columns: 1fr; }
             .feature-wide, .feature-half-left, .feature-half-right, .feature-full { grid-column: 1 / -1; }
@@ -201,10 +213,11 @@
         }
 
         @media (max-width: 768px) {
-            body { padding-top: 80px; }
-            .navbar { padding: 10px 15px; height: auto; border-bottom: none; }
-            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 10px; }
-            .nav-tabs::-webkit-scrollbar { display: none; } /* Oculta scrollbar en móvil */
+            body { padding-top: 130px; } /* Más espacio por el navbar apilado */
+            .navbar { padding: 15px 15px 0 15px; align-items: center; border-bottom: none; }
+            .nav-brand { justify-content: center; width: 100%; } /* Centra el logo en móvil */
+            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 10px; justify-content: flex-start; }
+            .nav-tabs::-webkit-scrollbar { display: none; }
             .nav-link { font-size: 13px; padding: 10px 15px; }
 
             .slide-container { padding: 60px 20px 40px 20px; border-radius: 0; border-left: none; border-right: none; }
@@ -216,6 +229,13 @@
             .card-custom h3 { font-size: 22px; }
             .card-custom p { font-size: 16px; }
             .pricing-value { font-size: 32px; }
+
+            /* Ajustes específicos para arreglar los botones (CTA) aplastados */
+            .slide-cta { padding: 20px 20px 40px 20px; }
+            .cta-container { padding: 30px 20px; flex-direction: column; text-align: center; justify-content: center; }
+            .cta-title { font-size: 32px; }
+            .cta-buttons-wrapper { width: 100%; justify-content: center; }
+            .cta-buttons-wrapper a { width: 100%; justify-content: center; text-align: center; }
         }
     </style>
 </head>
@@ -379,10 +399,10 @@
         </div>
 
         <!-- CTA GLOBAL -->
-        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
-            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
-                <h3 style="font-size: 38px; margin: 0;">¿Tiene un proyecto en mente?</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="slide-container slide-cta">
+            <div class="card-custom reveal cta-container">
+                <h3 class="cta-title">¿Tiene un proyecto en mente?</h3>
+                <div class="cta-buttons-wrapper">
                     <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
                         <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar Proyecto
                     </a>
@@ -445,10 +465,10 @@
         </div>
 
         <!-- CTA GLOBAL -->
-        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
-            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
-                <h3 style="font-size: 38px; margin: 0;">¿Tiene un proyecto web en mente?</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="slide-container slide-cta">
+            <div class="card-custom reveal cta-container">
+                <h3 class="cta-title">¿Tiene un proyecto web en mente?</h3>
+                <div class="cta-buttons-wrapper">
                     <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
                         <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar Proyecto Web
                     </a>
@@ -504,10 +524,10 @@
         </div>
 
         <!-- CTA GLOBAL -->
-        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
-            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
-                <h3 style="font-size: 38px; margin: 0;">¿Listo para lanzar su App?</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="slide-container slide-cta">
+            <div class="card-custom reveal cta-container">
+                <h3 class="cta-title">¿Listo para lanzar su App?</h3>
+                <div class="cta-buttons-wrapper">
                     <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
                         <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Cotizar mi App
                     </a>
@@ -572,10 +592,10 @@
         </div>
 
         <!-- CTA GLOBAL -->
-        <div class="slide-container" style="min-height: auto; padding: 40px 80px 80px 80px;">
-            <div class="card-custom reveal" style="display: flex; align-items: center; justify-content: space-between; padding: 40px 50px; border-color: rgba(0, 255, 136, 0.4); flex-wrap: wrap; gap: 20px;">
-                <h3 style="font-size: 38px; margin: 0;">¿Mejoramos su imagen corporativa?</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="slide-container slide-cta">
+            <div class="card-custom reveal cta-container">
+                <h3 class="cta-title">¿Mejoramos su imagen corporativa?</h3>
+                <div class="cta-buttons-wrapper">
                     <a href="https://wa.me/529991189436" target="_blank" class="btn-solid" style="background: var(--primary-green); color: #000; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 18px;">
                         <i class="fa-brands fa-whatsapp" style="font-size: 28px; color: #000; margin: 0;"></i> Contactar a Diseño
                     </a>
