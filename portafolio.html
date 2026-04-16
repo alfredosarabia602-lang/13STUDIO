@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ETIQUETA MÁGICA PARA TRANSICIONES ENTRE PÁGINAS SIN RECARGA VISIBLE -->
+    <meta name="view-transition" content="same-origin">
     <title>Alfredo Sarabia - Portafolio Profesional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,12 +14,22 @@
             --hero-bg: #0f172a;
         }
 
-        body {
+        html, body {
+            /* El fondo carga inmediatamente para evitar parpadeos blancos */
             background-color: var(--primary-bg);
             color: white;
             overflow-x: hidden;
             scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL PARA LA ANIMACIÓN --- */
+        #app-wrapper {
             opacity: 0; /* Oculto inicialmente para la transición */
+            width: 100%;
+            min-height: 100vh;
+            will-change: transform, opacity;
         }
 
         /* --- ANIMACIONES DE TRANSICIÓN DE PÁGINA --- */
@@ -308,6 +320,7 @@
 </head>
 <body>
 
+<div id="app-wrapper">
     <!-- BOTÓN VOLVER A LANDING PAGE CON NUEVA FUNCIÓN DE SALIDA -->
     <a href="#" onclick="cerrarPortafolio(event)" class="fixed top-4 left-4 md:top-6 md:left-6 z-[100] flex items-center gap-2 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white px-3 md:px-4 py-2 rounded-full shadow-lg hover:bg-sky-500 hover:border-sky-400 hover:scale-105 transition-all duration-300 group cursor-pointer">
         <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -727,17 +740,19 @@
         </footer>
     </main>
 
+</div>
+
     <script>
         // --- ANIMACIÓN DE ENTRADA Y SALIDA ---
         document.addEventListener('DOMContentLoaded', () => {
+            const appWrapper = document.getElementById('app-wrapper');
             // Añade la clase que desliza la página hacia adentro
-            document.body.classList.add('page-enter');
+            appWrapper.classList.add('page-enter');
             
             // Cuando la animación termine (600ms), quitamos la clase y la hacemos visible normalmente
-            // Esto evita que la posición de los elementos fijos (como los botones y el lightbox) se rompan
             setTimeout(() => {
-                document.body.classList.remove('page-enter');
-                document.body.style.opacity = '1';
+                appWrapper.classList.remove('page-enter');
+                appWrapper.style.opacity = '1';
             }, 600);
             
             // Cargar por defecto la galería
@@ -748,8 +763,9 @@
         function cerrarPortafolio(event) {
             event.preventDefault(); // Evita que navegue de inmediato
             
+            const appWrapper = document.getElementById('app-wrapper');
             // Aplica la animación para deslizarse hacia la derecha
-            document.body.classList.add('page-exit');
+            appWrapper.classList.add('page-exit');
             
             // Espera a que termine la animación (450ms) antes de redirigir
             setTimeout(() => {
